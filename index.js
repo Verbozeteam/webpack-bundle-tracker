@@ -68,6 +68,29 @@ Plugin.prototype.apply = function(compiler) {
         });
         chunks[chunk.name] = files;
       });
+
+      var chunkKeys = Object.keys(chunks);
+      Object.keys(stats.compilation.assets).map(function(asset){
+
+        // checking for gzipped js files
+        // NOTE: files must be in format [name]-[anything].[ext] (emphasis on the '[name]-' part)
+        // EXAMPLE: public_website-1234567890.js.gz
+        var splitAssetName = asset.split('-'); // based on above example, should be: ['public_website', '1234567890.js.gz']
+        var assetChunkName = splitAssetName[0];
+        var assetHashAndExt = splitAssetName[1];
+        if (chunkKeys.includes(assetChunkName) && assetHashAndExt.includes('js.gz')) {
+          var F = {name: asset};
+          if (compiler.options.output.publicPath) {
+            F.publicPath = compiler.options.output.publicPath + asset;
+          }
+          if (compiler.options.output.path) {
+            F.path = path.join(compiler.options.output.path, asset);
+          }
+          chunks[assetChunkName].push(F)
+        }
+
+      });
+
       var output = {
         status: 'done',
         chunks: chunks
