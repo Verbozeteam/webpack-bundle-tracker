@@ -74,11 +74,11 @@ Plugin.prototype.apply = function(compiler) {
 
         // checking for gzipped js files
         // NOTE: files must be in format [name]-[anything].[ext] (emphasis on the '[name]-' part)
-        // EXAMPLE: public_website-1234567890.js.gz
-        var splitAssetName = asset.split('-'); // based on above example, should be: ['public_website', '1234567890.js.gz']
+        // EXAMPLE: public_website-1234567890.js.jgz (we use .jgz because safari doesn't support .gz)
+        var splitAssetName = asset.split('-'); // based on above example, should be: ['public_website', '1234567890.js.jgz']
         var assetChunkName = splitAssetName[0];
         var assetHashAndExt = splitAssetName[1];
-        if (chunkKeys.includes(assetChunkName) && assetHashAndExt.includes('js.gz')) {
+        if (chunkKeys.includes(assetChunkName) && assetHashAndExt.includes('js.jgz')) {
           var F = {name: asset};
           if (compiler.options.output.publicPath) {
             F.publicPath = compiler.options.output.publicPath + asset;
